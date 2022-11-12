@@ -1,0 +1,54 @@
+.data
+	msg1: .asciiz"\nQual foi o valor de venda no mes em questao? "
+	msg2: .asciiz"\nO salário final foi de: "
+	num1: .float 1200.0
+	num2: .float 0.1
+	num3: .float 0.2
+	num4: .float 1500.0
+	num5: .float 150.0
+
+.text
+main:
+	l.s $f2, num1
+	l.s $f3, num2
+	l.s $f4, num3
+	l.s $f1, num4
+	l.s $f10, num5
+	
+	li $v0, 4
+	la $a0, msg1
+	syscall
+	
+	li $v0, 6
+	syscall
+	mov.s $f15, $f0	#valor da venda
+	
+	c.le.s $f15, $f2
+	bc1t se1
+	bc1f senao	
+	
+	se1:
+	mul.s $f5, $f15, $f3
+	add.s $f6, $f15, $f5
+	li $v0,4
+	la $a0,msg2
+	syscall	
+	li $v0,2
+	mov.s $f12, $f6
+	syscall	
+	j fimse1
+	
+	senao:
+	sub.s $f16, $f15,$f1
+	mul.s $f17, $f16, $f4
+	add.s $f18, $f17, $f10
+	add.s $f19, $f18, $f2
+	
+	li $v0,4
+	la $a0,msg2
+	syscall	
+	li $v0,2
+	mov.s $f12, $f19
+	syscall	
+	j fimse1
+	fimse1:

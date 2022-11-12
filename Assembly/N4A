@@ -1,0 +1,322 @@
+.data
+	msg1:.asciiz"\nDigite o salario: "
+	msg2:.asciiz"\nIsento de imposto	"
+	msg3:.asciiz"\nFaixa 2: "
+	msg4:.asciiz"\nFaixa 3: "
+	msg5:.asciiz"\nFaixa 4: "
+	msg6:.asciiz"\nFaixa 5: "
+	msg7:.asciiz"\nTotal Imposto - R$ - "
+	msg8:.asciiz"\nSalario com descontos - R$ "
+	msg9:.asciiz"\nAlíquota efetiva  "
+	num1:.float 1903.98
+	num2:.float 2826.65
+	num3:.float 3751.05
+	num4:.float 4664.68
+	num5:.float 0.075
+	num6:.float 0.15
+	num7:.float 0.225
+	num8:.float 0.275
+	num9:.float 100.0
+.text
+main:
+	
+	#consulta
+	li $v0, 4
+	la $a0, msg1
+	syscall
+	li $v0, 6
+	syscall
+	mov.s $f1, $f0
+	
+	l.s $f2, num1  
+	l.s $f3, num2
+	l.s $f4, num3 
+	l.s $f5, num4 
+	l.s $f6, num5 
+	l.s $f7, num6  
+	l.s $f8, num7 
+	l.s $f9, num8 
+	l.s $f10, num9
+	
+	#cálculo imp FAIXA 1
+	sub.s $f26, $f3, $f2
+	mul.s $f22, $f6, $f26
+
+	#cálculo imp FAIXA 2
+	sub.s $f27, $f4, $f3
+	mul.s $f23, $f7, $f27
+	add.s $f13, $f22, $f23 
+	
+	#cálculo imp FAIXA 3
+	sub.s $f28, $f5, $f4
+	mul.s $f24, $f8, $f28
+	add.s $f14, $f13, $f24 
+	
+	#cálculo imp FAIXA 4
+	sub.s $f29, $f1, $f5
+	mul.s $f25, $f9, $f29
+	add.s $f15, $f14, $f25
+	
+	#FAIXA 1
+	#se sal<=1903.98
+	c.le.s $f1, $f2   
+	bc1t se1
+	bc1f senao1
+	
+	se1:
+	li $v0, 4
+	la $a0, msg2 
+	syscall
+	
+	#aliquota efetiva
+	li $v0, 4
+	la $a0, msg9
+	syscall
+	
+	div.s $f11, $f14, $f1
+	mul.s $f30, $f11, $f10
+		
+	li $v0, 2
+	mov.s $f12, $f30
+	syscall
+	
+	j fimse
+	
+	senao1:
+	#FAIXA 2
+	#se sal<=2826.65
+	c.le.s $f1, $f3  
+	bc1t se2
+	bc1f senao2
+	
+	se2:
+	
+	li $v0, 4
+	la $a0, msg3
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f22	
+	syscall
+	
+	li $v0, 4
+	la $a0, msg7
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f22
+	syscall
+	
+	li $v0, 4
+	la $a0, msg8
+	syscall
+	
+	sub.s $f1, $f1, $f22
+	
+	li $v0, 2
+	mov.s $f12, $f1
+	syscall	
+	
+	#aliquota efetiva
+	li $v0, 4
+	la $a0, msg9
+	syscall
+	
+	div.s $f11, $f14, $f1
+	mul.s $f30, $f11, $f10
+		
+	li $v0, 2
+	mov.s $f12, $f30
+	syscall
+	
+	j fimse
+	
+	senao2:
+	#FAIXA 3
+	#se sal<=3751.05
+	c.le.s $f1, $f4  
+	bc1t se3
+	bc1f senao3
+	
+	se3:
+	
+	li $v0, 4
+	la $a0, msg3 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f22
+	syscall
+	
+	li $v0, 4
+	la $a0, msg4 
+	syscall
+
+	li $v0, 2
+	mov.s $f12, $f23 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg7 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f13 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg8 
+	syscall
+	
+	sub.s $f1, $f1, $f13
+	
+	li $v0, 2
+	mov.s $f12, $f1  
+	syscall
+	
+	#aliquota efetiva
+	li $v0, 4
+	la $a0, msg9
+	syscall
+	
+	div.s $f11, $f14, $f1
+	mul.s $f30, $f11, $f10
+		
+	li $v0, 2
+	mov.s $f12, $f30
+	syscall
+	
+	j fimse
+	
+	senao3:
+	#FAIXA 4
+	#se sal<=4664.68
+	c.le.s $f1, $f5  
+	bc1t se4
+	bc1f senao4
+	
+	se4:
+	
+	li $v0, 4
+	la $a0, msg3
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f22  
+	syscall
+	
+	li $v0, 4
+	la $a0, msg4 
+	syscall
+
+	li $v0, 2
+	mov.s $f12, $f23 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg5 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f24 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg7 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f14 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg8 
+	syscall
+	
+	sub.s $f1, $f1, $f14
+	
+	li $v0, 2
+	mov.s $f12, $f1 
+	syscall
+	
+	#aliquota efetiva
+	li $v0, 4
+	la $a0, msg9
+	syscall
+	
+	div.s $f11, $f14, $f1
+	mul.s $f30, $f11, $f10
+		
+	li $v0, 2
+	mov.s $f12, $f30
+	syscall
+	
+	j fimse
+	
+	senao4:
+	#FAIXA 5
+	#se sal>4664.68
+	
+	li $v0, 4
+	la $a0, msg3 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f22
+	syscall
+
+	li $v0, 4
+	la $a0, msg4 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f23 
+	syscall
+
+	li $v0, 4
+	la $a0, msg5 
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f24 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg6  
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f25  
+	syscall
+	
+	li $v0, 4
+	la $a0, msg7  
+	syscall
+	
+	li $v0, 2
+	mov.s $f12, $f15 
+	syscall
+	
+	li $v0, 4
+	la $a0, msg8 
+	syscall
+	
+	sub.s $f1, $f1, $f15
+
+	li $v0, 2
+	mov.s $f12, $f1
+	syscall
+	
+	#aliquota efetiva
+	li $v0, 4
+	la $a0, msg9
+	syscall
+	
+	div.s $f11, $f14, $f1
+	mul.s $f30, $f11, $f10
+		
+	li $v0, 2
+	mov.s $f12, $f30
+	syscall
+	
+	fimse:

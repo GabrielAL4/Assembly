@@ -1,0 +1,96 @@
+.data
+	msg1: .asciiz "\nInsira seu salario: "
+	msg2: .asciiz "\nO valor que deve ser pago ao INSS e de:  "
+	msg3: .asciiz "\nInsira novamente um valor positivo:  "
+	num: .float 1001.0
+	num1: .float 2001.0
+	num5: .float 0.10
+	num6: .float 0.15
+	num7: .float 0.20
+	num8: .float 0.00
+.text
+main:
+	l.s $f20, num
+	l.s $f21, num1
+	l.s $f25, num5
+	l.s $f26, num6
+	l.s $f27, num7
+	l.s $f28, num8
+	
+	li $v0, 4
+	la $a0, msg1
+	syscall
+	
+	li $v0, 6
+	syscall
+	mov.s $f1, $f0
+	
+	c.lt.s $f1, $f28
+	bc1t se5
+	bc1f senao5
+	se5:
+	li $v0, 4
+	la $a0, msg3
+	syscall
+	
+	li $v0, 6
+	syscall
+	mov.s $f1, $f0
+	
+	c.lt.s $f1, $f20
+	bc1t se1
+	bc1f senao1
+	j fimse
+	
+	senao5:
+	c.lt.s $f1, $f20
+	bc1t se1
+	bc1f senao1
+	
+	se1:
+	mul.s $f10, $f1, $f25
+	li $v0, 4
+    	la $a0, msg2
+    	syscall
+	li $v0, 2
+   	mov.s $f12, $f10
+    	syscall
+    	sub.s $f11, $f1, $f10
+    	
+	li $v0, 2
+   	mov.s $f12, $f11
+   	syscall
+	j fimse
+	
+	senao1:
+	c.lt.s $f1, $f21
+	bc1t se2
+	bc1f senao2
+	se2:
+	mul.s $f10, $f1, $f26
+	li $v0, 4
+    	la $a0, msg2
+    	syscall
+	li $v0, 2
+   	mov.s $f12, $f10
+    	syscall
+    	sub.s $f11, $f1, $f10
+	
+	li $v0, 2
+   	mov.s $f12, $f11
+   	syscall
+	j fimse
+	
+	senao2:
+	mul.s $f10, $f1, $f27
+	li $v0, 4
+    	la $a0, msg2
+    	syscall
+	li $v0, 2
+   	mov.s $f12, $f10
+    	syscall
+    	sub.s $f11, $f1, $f10
+    	fimse:
+
+	
+	
